@@ -1,0 +1,36 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Indentation: List</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+    <div id="breadcrumbs">
+        <a href="/cgi-bin/koha/mainpage.pl">Home</a>
+        &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
+        &rsaquo; indentation
+    </div>
+
+    <div class="main container-fluid">
+
+        <h3>suggestion list</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Word</th>
+                </tr>
+            </thead>
+            <tbody>
+                [% FOREACH word IN words %]
+                    <tr>
+                        <td>[% word.title  %]</td>
+                    </tr>
+                [% END %]
+            </tbody>
+        </table>
+
+    </div>
+
+[% INCLUDE 'intranet-bottom.inc' %]
