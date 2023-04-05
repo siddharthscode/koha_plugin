@@ -39,24 +39,64 @@ sub tool {
     my $dbh = C4::Context->dbh;
     my $suggestions_table = $self->get_qualified_table_name('suggestions');
 
-    my $query = "
-        SELECT * FROM suggestions
+    # find all borrowers
+    my $borrowers_query = "
+        SELECT borrowernumber, firstname, surname FROM borrowers
     ";
-
-    my $sth = $dbh->prepare($query);
+    my $sth = $dbh->prepare($borrowers_query);
     $sth->execute();
-    my @results;
-    while ( my $row = $sth->fetchrow_hashref() ) {
-        push( @results, $row );
+    my @borrowers_list;
+    while ( my @row = $sth->fetchrow_array() ) {
+        push( @borrowers_list, @row );
+    }
+
+    # $template->param(words => \@borrowers_list);
+    # $self->output_html($template->output());
+    #check if a borrower has a suggestion
+    while (my ($borrowernumber, $firstname, $surname) = each @borrowers_list){
+        # my ($borrowernumber, $firstname, $surname) = @borrow;
+        my $borrow_query = "SELECT * FROM suggestions  WHERE suggestedby LIKE $borrowernumber";
+        $sth = $dbh->prepare($borrow_query);
+        $sth->execute();
+        my @suggest_list;
+        while ( my $row = $sth->fetchrow_hashref() ) {
+            push( @suggest_list, $row );
+        }
+
+        if(@suggest_list){
+            #if list is not empty
+            $template->param(words => \@suggest_list,
+                            borrower => $firstname);
+            # print $template->output();
+            $self->output_html($template->output());
+            q|
+        <script>
+        var button = document.getElementById("pdfButton");
+      var makepdf = document.getElementById("generatePDF");
+      button.addEventListener("click", function () {
+         var mywindow = window.open("", "PRINT", "height=600,width=600");
+         mywindow.document.write(makepdf.innerHTML);
+         mywindow.document.close();
+         mywindow.focus();
+         mywindow.print();
+         return true;
+      });
+      
+        </script>
+            |;
+        }
+    
     }
 
 
 
 
-    # my $words = $dbh->selectcol_arrayref( "SELECT suggestedby FROM suggestions" );
-    $template->param( words => \@results );
-    # print $template->output();
-    $self->output_html( $template->output() );
+
+
+    # # my $words = $dbh->selectcol_arrayref( "SELECT suggestedby FROM suggestions" );
+    # $template->param( words => \@results );
+    # # print $template->output();
+    # $self->output_html( $template->output() );
 
 }
 

@@ -1,6 +1,28 @@
 [% INCLUDE 'doc-head-open.inc' %]
- <title>Koha: Indentation: List</title>
+ <title>Generate pdf</title>
 [% INCLUDE 'doc-head-close.inc' %]
+
+   <style>
+      .container {
+         position: fixed;
+         top: 20%;
+         left: 28%;
+         border-radius: 7px;
+      }
+      .card {
+         box-sizing: content-box;
+         width: 300px;
+         height: 400px;
+         padding: 30px;
+         border: 1px solid black;
+         font-style: sans-serif;
+         background-color: #f0f0f0;
+      }
+      h2 {
+         text-align: center;
+         color: #24650b;
+      }
+   </style>
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
@@ -12,25 +34,38 @@
         &rsaquo; indentation
     </div>
 
-    <div class="main container-fluid">
+    <div class="container">
+      <button id="pdfButton"><b>Click here to Generate PDF</b></button>
+      <div class="card" id="generatePDF">
+         <div class="main container-fluid">
 
         <h3>suggestion list</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Word</th>
+                    <th> [% borrower %] </th>
                 </tr>
             </thead>
             <tbody>
                 [% FOREACH word IN words %]
                     <tr>
-                        <td>[% word.title  %]</td>
+                        <td>
+                        [% word.title %]
+                        </td>
                     </tr>
                 [% END %]
             </tbody>
         </table>
 
+        <form method="post">
+        <br/>
+        <input name="submitted" type="submit" value="Click me" />
+    </form>
+
     </div>
+      </div>
+   </div>
+
 
 [% INCLUDE 'intranet-bottom.inc' %]
