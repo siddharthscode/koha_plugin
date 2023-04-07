@@ -118,13 +118,15 @@
 
 
     <div id="textbox">
-   <p class="alignleft">Department:</p>
-   <p class="alignleft">Library uses......</p>
-   <p class="alignleft">Indent No:</p>
-   
+   <p class="alignleft">
+   Department: <br>
+   Library uses......<br>
+   Indent No: <br>
+   </p>
 
-   <p class="aligncenter">Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<\p>
-   <p>Library uses......<br>
+   <p class="aligncenter">
+   Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
+   Library uses......<br>
    Date:  Order Place to :…………………<br>
    </p>
 
