@@ -39,12 +39,12 @@
       <div class="card" id="generatePDF">
          <div class="main container-fluid">
 
-        <h3>suggestion list</h3>
+        <h3>suggestion list updated</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th> [% borrower %] </th>
+                    <th> [% borrower.borrowernumber %] [% borrower.surname %] </th>
                 </tr>
             </thead>
             <tbody>
