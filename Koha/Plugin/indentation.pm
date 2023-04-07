@@ -138,25 +138,62 @@ sub tool {
                 my $rr1 = $sth3->fetchrow_hashref();
                 $template->param(borrower => $rr1, 
                                 words => \@suggest_list);
+                q|
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+                |;
                 $self->output_html($template->output());
-    #             q|
-    #         <script>
-    #         var button = document.getElementById("pdfButton");
-    #     var makepdf = document.getElementById("generatePDF");
-    #     button.addEventListener("click", function () {
-    #         var mywindow = window.open("", "PRINT", "height=600,width=600");
-    #         mywindow.document.write(makepdf.innerHTML);
-    #         mywindow.document.close();
-    #         mywindow.focus();
-    #         mywindow.print();
-    #         return true;
-    #     });
-    #         </script>
-    #             |;
+                q|           
+    <script>
+    var button = document.getElementById("button");
+    var makepdf = document.getElementById("makepdf");
+  
+    button.addEventListener("click", function () {
+        var mywindow = window.open("", "PRINT", 
+                "height=800,width=1000");
+  
+        mywindow.document.write(makepdf.innerHTML);
+  
+        mywindow.document.close();
+        mywindow.focus();
+  
+        mywindow.print();
+        mywindow.close();
+  
+        return true;
+    });
+</script>
+                |;
     #         }
         
     #     }
     }
+}
+sub intranet_js {
+    my ( $self ) = @_;
+
+    return q|
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+        <script>
+    var button = document.getElementById("button");
+    var makepdf = document.getElementById("makepdf");
+  
+    button.addEventListener("click", function () {
+        var mywindow = window.open("", "PRINT", 
+                "height=400,width=600");
+  
+        mywindow.document.write(makepdf.innerHTML);
+  
+        mywindow.document.close();
+        mywindow.focus();
+  
+        mywindow.print();
+        mywindow.close();
+  
+        return true;
+    });
+</script>
+
+    |;
 }
 # sub tool_step1 {
 #     my ( $self, $args ) = @_;

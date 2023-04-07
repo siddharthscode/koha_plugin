@@ -2,27 +2,72 @@
  <title>Generate pdf</title>
 [% INCLUDE 'doc-head-close.inc' %]
 
-   <style>
-      .container {
-         position: fixed;
-         top: 20%;
-         left: 28%;
-         border-radius: 7px;
-      }
-      .card {
-         box-sizing: content-box;
-         width: 300px;
-         height: 400px;
-         padding: 30px;
-         border: 1px solid black;
-         font-style: sans-serif;
-         background-color: #f0f0f0;
-      }
-      h2 {
-         text-align: center;
-         color: #24650b;
-      }
-   </style>
+   
+   <style type="text/css">
+		body
+		{
+		    counter-reset: Serial;          
+		}
+
+		table
+		{
+		    border-collapse: separate;
+		}
+
+		tr td:first-child:before
+		{
+		  counter-increment: Serial;      
+		  content: counter(Serial); 
+		}
+       .alignleft {
+  float: left;
+  width: 33.33333%;
+  text-align: left;
+}
+.aligncenter {
+  float: left;
+  width: 33.33333%;
+  text-align: center;
+}
+.alignright {
+ float: left;
+ width: 33.33333%;
+ text-align: right;
+}​
+	</style>
+    <style>
+        .container {
+            position: fixed;
+            top: 20%;
+            left: 10%;
+            margin-top: -65px;
+            margin-left: -100px;
+            border-radius: 7px;
+        }
+  
+        .card {
+            box-sizing: content-box;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            border: 1px solid black;
+            font-style: sans-serif;
+            background-color: #f0f0f0;
+        }
+  
+        #button {
+            background-color: #4caf50;
+            border-radius: 5px;
+            margin-left: 650px;
+            margin-bottom: 5px;
+            color: white;
+        }
+  
+        h2 {
+            text-align: center;
+            color: #24650b;
+        }
+    </style>
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
@@ -35,33 +80,62 @@
     </div>
 
     <div class="container">
-      <button id="pdfButton"><b>Click here to Generate PDF</b></button>
-      <div class="card" id="generatePDF">
+      <button id="button"><b>Click here to Generate PDF</b></button>
+      <div class="card" id="makepdf">
          <div class="main container-fluid">
 
-        <h3>suggestion list updated</h3>
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th> [% borrower.borrowernumber %] [% borrower.surname %] </th>
+                    <th>Sl.No</th>
+                    <th>Author/Editor (In Capitals)</th>
+                    <th>Title</th>
+                    <th>Ed/Year</th>
+                    <th>Publisher</th>
+                    <th>List Price of the Book (Single Copy)</th>
+                    <th>Conversion Rate</th>
+                    <th>Discount</th>
+                    <th>Quantity</th>
                 </tr>
             </thead>
             <tbody>
                 [% FOREACH word IN words %]
                     <tr>
-                        <td>
-                        [% word.title %]
-                        </td>
+                        <td></td>
+                        <td>[% word.author %]<\td>
+                        <td>[% word.title %]</td>
+                        <td>[% word.publicationyear %]</td>
+                        <td>[% word.publishercode %]</td>
+                        <td>[% word.price %]</td>
+                        <td>[% word.currency %]</td>
+                        <td></td>
+                        <td>[% word.quantity %]</td>
                     </tr>
                 [% END %]
             </tbody>
         </table>
 
-        <form method="post">
-        <br/>
-        <input name="submitted" type="submit" value="Click me" />
-    </form>
+
+    <div id="textbox">
+   <p class="alignleft">Department:</p>
+   <p class="alignleft">Library uses......</p>
+   <p class="alignleft">Indent No:</p>
+   
+
+   <p class="aligncenter">Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<\p>
+   <p>Library uses......<br>
+   Date:  Order Place to :…………………<br>
+   </p>
+
+   <p class="alignright">
+   Date: <br>
+   Library uses......<br>
+   P O. No.:………………………………<br>
+   </p>
+ </div>
+ <div style="clear: both;"></div>
+
 
     </div>
       </div>
