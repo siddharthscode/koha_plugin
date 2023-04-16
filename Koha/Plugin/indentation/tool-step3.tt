@@ -76,7 +76,10 @@
     <div id="breadcrumbs">
         <a href="/cgi-bin/koha/mainpage.pl">Home</a>
         &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
-        &rsaquo; indentation
+        &rsaquo; Indentation Plugin
+        &rsaquo; Choose Suggestor
+        &rsaquo; Indentation Generation
+        &rsaquo; Print PDF
     </div>
 
     <div class="container">

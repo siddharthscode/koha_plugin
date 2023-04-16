@@ -96,7 +96,9 @@
     <div id="breadcrumbs">
         <a href="/cgi-bin/koha/mainpage.pl">Home</a>
         &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
-        &rsaquo; indentation
+        &rsaquo; Indentation Plugin
+        &rsaquo; Choose Suggestor
+        &rsaquo; Indentation Generation
     </div>
 
     <div class="container">
@@ -162,6 +164,7 @@
    </p>
  </div>
  <div style="clear: both;"></div>
+ <input type="hidden" name="color" value="[% borrower.borrowernumber | html %]"/>
   <fieldset class="action">
                           <input type="submit" name="save" value="Generate indentation" />
                          <!--<input type="submit" value="Save configuration" /> -->

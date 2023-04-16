@@ -148,7 +148,7 @@ sub install() {
     my $dbh1 = C4::Context->dbh;
    my $qq1 = "
          CREATE TABLE IF NOT EXISTS $indentation_table (
-         `indentationid` INT(5) NOT NULL,
+         `indentationid` VARCHAR(50) NOT NULL,
          `status` VARCHAR(50) DEFAULT 'pending',
           `suggestionid` INT(10) DEFAULT NULL
         ) ENGINE = INNODB;";
