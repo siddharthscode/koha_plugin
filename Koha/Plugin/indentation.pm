@@ -82,7 +82,6 @@ sub tool {
     }
     else{
         my $borrow_id = scalar $cgi->param('color');
-        my $template = $self->get_template({ file => 'tool-step1.tt' });
         my $dbh = C4::Context->dbh;
         my $borrow_query = "SELECT * FROM suggestions  WHERE suggestedby LIKE '$borrow_id' ";
         my $sth2 = $dbh->prepare($borrow_query);
@@ -96,25 +95,41 @@ sub tool {
         my $sth3 = $dbh1->prepare($qq1);
         $sth3->execute();
         my $rr1 = $sth3->fetchrow_hashref();
-        $template->param(borrower => $rr1, 
-                        words => \@suggest_list);
-        $self->output_html($template->output());
 
-    #-----------------------new part----------------------------------------------------------------------------#
-        #add indentation of this borrower in database
-        #for now there is a dummy indentation id
-         #my $indentation_id = "LIB-23-LA-2269";
-         my $table = "indentation_list_table";
+        unless ($cgi->param('save') eq 'Generate indentation'){
+            my $template = $self->get_template({ file => 'tool-step1.tt' });
+            $template->param(borrower => $rr1, 
+                            words => \@suggest_list);
+            $self->output_html($template->output());
+        }
+        else{
+             #-----------------------new part----------------------------------------------------------------------------#
+            #add indentation of this borrower in database
+            #for now there is a dummy indentation id
+            #my $indentation_id = "LIB-23-LA-2269";
+            my $table = "indentation_list_table";
+            my $indentid =  $cgi->param('indentid');
+            my $dateid = $cgi->param('date');
 
-         foreach my $row ( @suggest_list){
-             my $dbh11 = C4::Context->dbh;
-             my $qq11 = qq/
-                         INSERT INTO $table (indentationid, status, suggestionid) 
-                         VALUES (?, ?, ?)/;
-             my $sth31 = $dbh11->prepare($qq11);
-             $sth31->execute($rr1->{borrowernumber}, 'pending', $row->{suggestionid});
-             $sth31->finish();
-         }
+            foreach my $row ( @suggest_list){
+                my $dbh11 = C4::Context->dbh;
+                my $qq11 = qq/
+                            INSERT INTO $table (indentationid, status, suggestionid) 
+                            VALUES (?, ?, ?)/;
+                my $sth31 = $dbh11->prepare($qq11);
+                $sth31->execute($indentid, 'pending', $row->{suggestionid});
+                $sth31->finish();
+            }  
+            
+            my $template1 = $self->get_template({ file => 'tool-step3.tt' });
+            $template1->param(borrower => $rr1, 
+                              words => \@suggest_list,
+                              indentid => $indentid,
+                              date_id => $dateid);
+            $self->output_html($template1->output());
+
+            
+        }
     }
 }
 
@@ -148,7 +163,6 @@ sub install() {
     $sth3->finish();
     
     return 1;
-
 }
 
 sub uninstall() {
