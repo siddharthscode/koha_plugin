@@ -125,7 +125,7 @@
                 [% FOREACH word IN words %]
                     <tr>
                         <td></td>
-                        <td>[% word.author %]<\td>
+                        <td>[% word.author %]</td>
                         <td>[% word.title %]</td>
                         <td>[% word.publicationyear %]</td>
                         <td>[% word.publishercode %]</td>
