@@ -79,208 +79,60 @@ sub tool {
         }
         $template->param( suggestor_list => \@suggestors_id_list);
         $self->output_html($template->output());
-
-        # my @suggestor_list;
-        # while (my ($borrowernumber) = each @suggestors_id_list){
-        #     # my ($borrowernumber, $firstname, $surname) = @borrow;
-        #     my $qq = "
-        #         SELECT *  FROM borrowers WHERE borrowernumber LIKE '$borrowernumber'
-        #     ";
-        #     my $sth1 = $dbh->prepare($qq);
-        #     $sth1->execute();
-        #     while ( my $row = $sth1->fetchrow_hashref() ) {
-        #         push( @suggestor_list, $row );
-        #     }
-        # }
-        # $template->param( suggestor_list => \@suggestor_list);
-
-        # $self->output_html($template->output());
-
     }
     else{
         my $borrow_id = scalar $cgi->param('color');
-        my $template = $self->get_template({ file => 'tool-step1.tt' });
         my $dbh = C4::Context->dbh;
+        my $borrow_query = "SELECT * FROM suggestions  WHERE suggestedby LIKE '$borrow_id' ";
+        my $sth2 = $dbh->prepare($borrow_query);
+        $sth2->execute();
+        my @suggest_list;
+        while ( my $row = $sth2->fetchrow_hashref() ) {
+            push( @suggest_list, $row );
+        }
+        my $dbh1 = C4::Context->dbh;
+        my $qq1 = "SELECT * FROM borrowers  WHERE borrowernumber LIKE '$borrow_id' ";
+        my $sth3 = $dbh1->prepare($qq1);
+        $sth3->execute();
+        my $rr1 = $sth3->fetchrow_hashref();
 
-    #     # find all borrowers
-    #     my $borrowers_query = "
-    #         SELECT borrowernumber FROM borrowers
-    #     ";
-    #     my $sth = $dbh->prepare($borrowers_query);
-    #     $sth->execute();
-    #     my @borrowers_list;
-    #     while ( my $row = $sth->fetchrow_array() ) {
-    #         push( @borrowers_list, $row );
-    #     }
+        unless ($cgi->param('save') eq 'Generate indentation'){
+            my $template = $self->get_template({ file => 'tool-step1.tt' });
+            $template->param(borrower => $rr1, 
+                            words => \@suggest_list);
+            $self->output_html($template->output());
+        }
+        else{
+             #-----------------------new part----------------------------------------------------------------------------#
+            #add indentation of this borrower in database
+            #for now there is a dummy indentation id
+            #my $indentation_id = "LIB-23-LA-2269";
+            my $table = "indentation_list_table";
+            my $indentid =  $cgi->param('indentid');
+            my $dateid = $cgi->param('date');
 
-    #     # $template->param(words => \@borrowers_list);
-    #     # $self->output_html($template->output());
-    #     #check if a borrower has a suggestion
-    #     while (my $borrowernumber = each @borrowers_list){
-    #         # my ($borrowernumber, $firstname, $surname) = @borrow;
-            my $borrow_query = "SELECT * FROM suggestions  WHERE suggestedby LIKE '$borrow_id' ";
-            my $sth2 = $dbh->prepare($borrow_query);
-            $sth2->execute();
-            my @suggest_list;
-            while ( my $row = $sth2->fetchrow_hashref() ) {
-                push( @suggest_list, $row );
-            }
+            foreach my $row ( @suggest_list){
+                my $dbh11 = C4::Context->dbh;
+                my $qq11 = qq/
+                            INSERT INTO $table (indentationid, status, suggestionid) 
+                            VALUES (?, ?, ?)/;
+                my $sth31 = $dbh11->prepare($qq11);
+                $sth31->execute($indentid, 'pending', $row->{suggestionid});
+                $sth31->finish();
+            }  
+            
+            my $template1 = $self->get_template({ file => 'tool-step3.tt' });
+            $template1->param(borrower => $rr1, 
+                              words => \@suggest_list,
+                              indentid => $indentid,
+                              date_id => $dateid);
+            $self->output_html($template1->output());
 
-    #         if(@suggest_list){
-    #             #if list is not empty
-    #             $template->param(words => \@suggest_list,
-    #                             borrower => scalar Koha::Patrons->find($borrowernumber));
-    #             # print $template->output();
-                my $dbh1 = C4::Context->dbh;
-                my $qq1 = "SELECT * FROM borrowers  WHERE borrowernumber LIKE '$borrow_id' ";
-                my $sth3 = $dbh1->prepare($qq1);
-                $sth3->execute();
-                my $rr1 = $sth3->fetchrow_hashref();
-                $template->param(borrower => $rr1, 
-                                words => \@suggest_list);
-                q|
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
-                |;
-                $self->output_html($template->output());
-                q|           
-    <script>
-    var button = document.getElementById("button");
-    var makepdf = document.getElementById("makepdf");
-  
-    button.addEventListener("click", function () {
-        var mywindow = window.open("", "PRINT", 
-                "height=800,width=1000");
-  
-        mywindow.document.write(makepdf.innerHTML);
-  
-        mywindow.document.close();
-        mywindow.focus();
-  
-        mywindow.print();
-        mywindow.close();
-  
-        return true;
-    });
-</script>
-                |;
-    #         }
-        
-    #     }
+            
+        }
     }
 }
-sub intranet_js {
-    my ( $self ) = @_;
 
-    return q|
-       <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
-        <script>
-    var button = document.getElementById("button");
-    var makepdf = document.getElementById("makepdf");
-  
-    button.addEventListener("click", function () {
-        var mywindow = window.open("", "PRINT", 
-                "height=400,width=600");
-  
-        mywindow.document.write(makepdf.innerHTML);
-  
-        mywindow.document.close();
-        mywindow.focus();
-  
-        mywindow.print();
-        mywindow.close();
-  
-        return true;
-    });
-</script>
-
-    |;
-}
-# sub tool_step1 {
-#     my ( $self, $args ) = @_;
-#     my $cgi = $self->{'cgi'};
-#     my $template = $self->get_template({ file => 'tool-step1.tt' });
-#     my $dbh = C4::Context->dbh;
-
-#     # find all borrowers
-#     my $borrowers_query = "
-#         SELECT borrowernumber FROM borrowers
-#     ";
-#     my $sth = $dbh->prepare($borrowers_query);
-#     $sth->execute();
-#     my @borrowers_list;
-#     while ( my $row = $sth->fetchrow_array() ) {
-#         push( @borrowers_list, $row );
-#     }
-
-#     # $template->param(words => \@borrowers_list);
-#     # $self->output_html($template->output());
-#     #check if a borrower has a suggestion
-#     while (my $borrowernumber = each @borrowers_list){
-#         # my ($borrowernumber, $firstname, $surname) = @borrow;
-#         my $borrow_query = "SELECT * FROM suggestions  WHERE suggestedby LIKE $borrowernumber";
-#         $sth = $dbh->prepare($borrow_query);
-#         $sth->execute();
-#         my @suggest_list;
-#         while ( my $row = $sth->fetchrow_hashref() ) {
-#             push( @suggest_list, $row );
-#         }
-
-#         if(@suggest_list){
-#             #if list is not empty
-#             $template->param(words => \@suggest_list,
-#                             borrower => scalar Koha::Patrons->find($borrowernumber));
-#             # print $template->output();
-#             $self->output_html($template->output());
-#             q|
-#         <script>
-#         var button = document.getElementById("pdfButton");
-#       var makepdf = document.getElementById("generatePDF");
-#       button.addEventListener("click", function () {
-#          var mywindow = window.open("", "PRINT", "height=600,width=600");
-#          mywindow.document.write(makepdf.innerHTML);
-#          mywindow.document.close();
-#          mywindow.focus();
-#          mywindow.print();
-#          return true;
-#       });
-#         </script>
-#             |;
-#         }
-    
-#     }
-#     # # my $words = $dbh->selectcol_arrayref( "SELECT suggestedby FROM suggestions" );
-#     # $template->param( words => \@results );
-#     # # print $template->output();
-#     # $self->output_html( $template->output() );
-
-# }
-
-# sub tool_step2 {
-#     my ( $self, $args ) = @_;
-#     my $cgi = $self->{'cgi'};
-#     my $template = $self->get_template({ file => 'tool-step2.tt' });
-#     my $dbh = C4::Context->dbh;
-
-#     # find all borrowers who suggested
-#     my $suggestors_query = "
-#         SELECT borrowernumber FROM suggestions GROUP BY borrowernumber
-#     ";
-#     my $sth = $dbh->prepare($suggestors_query);
-#     $sth->execute();
-#     my @suggestors_id_list;
-#     while ( my @row = $sth->fetchrow_array() ) {
-#         push( @suggestors_id_list, @row );
-#     }
-    
-#     my @suggestor_list;
-#     while (my ($borrowernumber) = each @suggestors_id_list){
-#         # my ($borrowernumber, $firstname, $surname) = @borrow;
-#         push(@suggestor_list, scalar Koha::Patrons->find($borrowernumber));
-#     }
-#     $template->param( suggestor_list => \@suggestor_list);
-
-#     $self->output_html($template->output());
-# }
 
 sub configure {
     my ( $self, $args ) = @_;
@@ -290,12 +142,38 @@ sub configure {
 
 sub install() {
     my ( $self, $args ) = @_;
-
+    my $indentation_table = "indentation_list_table";
+	
+	#-------install and uninstall operations are working correctly-----------#
+    my $dbh1 = C4::Context->dbh;
+   my $qq1 = "
+         CREATE TABLE IF NOT EXISTS $indentation_table (
+         `indentationid` VARCHAR(50) NOT NULL,
+         `status` VARCHAR(50) DEFAULT 'pending',
+          `suggestionid` INT(10) DEFAULT NULL
+        ) ENGINE = INNODB;";
+    print "test12";
+    $dbh1->{PrintError} = 1;
+    $dbh1->{RaiseError} = 1;
+    my $sth3 = $dbh1->prepare($qq1);
+    print $dbh1;
+    print "test2";
+    $sth3->execute() or die "unable to execute".$sth3->errstr();
+    print "test3";
+    $sth3->finish();
+    
     return 1;
 }
 
 sub uninstall() {
     my ( $self, $args ) = @_;
+    my $table = "indentation_list_table";
+
+    my $dbh1 = C4::Context->dbh;
+    my $qq1 = "DROP TABLE IF EXISTS $table";
+    my $sth3 = $dbh1->prepare($qq1);
+    $sth3->execute();
+    $sth3->finish();
 
     return 1;
 }
