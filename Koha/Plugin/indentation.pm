@@ -117,7 +117,7 @@ sub tool {
                             INSERT INTO $table (indentationid, status, suggestionid) 
                             VALUES (?, ?, ?)/;
                 my $sth31 = $dbh11->prepare($qq11);
-                $sth31->execute($indentid, 'pending', $row->{suggestionid});
+                $sth31->execute($indentid, 'indentation generated', $row->{suggestionid});
                 $sth31->finish();
             }  
             
