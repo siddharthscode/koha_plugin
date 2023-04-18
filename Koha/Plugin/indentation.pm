@@ -29,7 +29,7 @@ our $VERSION = "{VERSION}";
 
 our $metadata = {
     name            => 'Indentation plugin',
-    author          => 'Siddharth',
+    author          => 'Siddharth, Rewant, Sravanthi, Nisha',
     description     => 'Generate indentation',
     date_authored   => '2020-12-01',
     date_updated    => "1970-01-01",
@@ -70,6 +70,7 @@ sub tool {
             SELECT DISTINCT borrowers.firstname, borrowers.surname, borrowers.borrowernumber
             FROM suggestions, borrowers 
             WHERE suggestions.suggestedby LIKE borrowers.borrowernumber
+            AND suggestions.STATUS LIKE 'CHECKED'
         ";
         my $sth = $dbh->prepare($suggestors_query);
         $sth->execute();
@@ -83,7 +84,10 @@ sub tool {
     else{
         my $borrow_id = scalar $cgi->param('color');
         my $dbh = C4::Context->dbh;
-        my $borrow_query = "SELECT * FROM suggestions  WHERE suggestedby LIKE '$borrow_id' ";
+        my $borrow_query = "
+        SELECT * FROM suggestions  
+        WHERE suggestedby LIKE '$borrow_id' 
+        AND STATUS LIKE 'CHECKED' ";
         my $sth2 = $dbh->prepare($borrow_query);
         $sth2->execute();
         my @suggest_list;
@@ -126,9 +130,7 @@ sub tool {
                               words => \@suggest_list,
                               indentid => $indentid,
                               date_id => $dateid);
-            $self->output_html($template1->output());
-
-            
+            $self->output_html($template1->output());            
         }
     }
 }
