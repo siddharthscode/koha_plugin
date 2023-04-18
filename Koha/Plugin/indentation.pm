@@ -38,6 +38,7 @@ our $metadata = {
     version         => $VERSION,
 };
 
+
 sub new {
     my ( $class, $args ) = @_;
 
