@@ -100,9 +100,8 @@
                 <input type="button" value="Create PDF" onclick="createPDF()">
             </form>
         </p>
-        <div class="header", id = "taghead">         
-            <img style="float: center; padding: 15px 5px 30px 20px; width:500px;height:150px" src="https://iith.ac.in/assets/images/logo.png" alt="IITH Logo" >
-            <p></p>            
+        <div class="header", id = "taghead">      
+            <img style="float:center; padding: 15px 5px 30px 20px; width:350px;height:100px" src="https://iith.ac.in/assets/images/logo.png" alt="IITH Logo" >         
         </div>   
 
     <div class="card" id="tab">        
