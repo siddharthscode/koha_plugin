@@ -29,7 +29,7 @@ our $VERSION = "{VERSION}";
 
 our $metadata = {
     name            => 'Indentation plugin',
-    author          => 'Siddharth, Rewant, Sravanthi, Nisha',
+    author          => 'Siddharth, Rewant, Nisha, Sravanthi',
     description     => 'Generate indentation',
     date_authored   => '2020-12-01',
     date_updated    => "1970-01-01",
@@ -37,6 +37,7 @@ our $metadata = {
     maximum_version => undef,
     version         => $VERSION,
 };
+
 
 sub new {
     my ( $class, $args ) = @_;
