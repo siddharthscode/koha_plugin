@@ -101,7 +101,7 @@
             </form>
         </p>
         <div class="header", id = "taghead">      
-            <img style="float:center; padding: 15px 5px 30px 20px; width:350px;height:100px" src="https://iith.ac.in/assets/images/logo.png" alt="IITH Logo" >         
+            <img style="float:center; padding: 0px 5px 30px 20px; width:350px;height:150px" src="https://library.iith.ac.in/assets/images/logo.png" alt="IITH Logo" >         
         </div>   
 
     <div class="card" id="tab">        
@@ -153,11 +153,15 @@
         <p class="alignright">
             Date: [% date_id %] <br>
             Library uses......<br>
-            P O. No.:………………………………<br>
+            P O. No.:………………………………<br><br><br>
         </p>
 
         <p class="alignbottomright">
-            Signature: ............ <br>
+            Deputy Librarian: ............ <br><br><br>
+        </p>
+
+        <p class="alignbottomright">
+            Chairman, Library Committee: ............ <br>
         </p>
     </div>
 
