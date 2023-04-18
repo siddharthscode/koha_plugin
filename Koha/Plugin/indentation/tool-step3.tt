@@ -3,7 +3,7 @@
 [% INCLUDE 'doc-head-close.inc' %]
 
    
-   <style type="text/css">
+   <style type="text/css">        
 		body
 		{
 		    counter-reset: Serial;          
@@ -13,6 +13,11 @@
 		{
 		    border-collapse: separate;
 		}
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
 		tr td:first-child:before
 		{
@@ -20,20 +25,26 @@
 		  content: counter(Serial); 
 		}
        .alignleft {
-  float: left;
-  width: 33.33333%;
-  text-align: left;
-}
-.aligncenter {
-  float: left;
-  width: 33.33333%;
-  text-align: center;
-}
-.alignright {
- float: left;
- width: 33.33333%;
- text-align: right;
-}​
+        float: left;
+        width: 33.33333%;
+        text-align: left;
+        }
+        .aligncenter {
+        float: left;
+        width: 33.33333%;
+        text-align: center;
+        }
+        .alignright {
+        float: left;
+        width: 33.33333%;
+        text-align: right;
+        }​
+        .alignbottomright {
+        float: left;
+        width: 33.33333%;
+        text-align: right;
+        }​
+    
 	</style>
     <style>
         .container {
@@ -44,7 +55,6 @@
             margin-left: -100px;
             border-radius: 7px;
         }
-  
         .card {
             box-sizing: content-box;
             width: 100%;
@@ -73,6 +83,7 @@
 [% INCLUDE 'header.inc' %]
 [% INCLUDE 'cat-search.inc' %]
 
+    
     <div id="breadcrumbs">
         <a href="/cgi-bin/koha/mainpage.pl">Home</a>
         &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
@@ -80,20 +91,21 @@
         &rsaquo; Choose Suggestor
         &rsaquo; Indentation Generation
         &rsaquo; Print PDF
-    </div>
+    </div>  
 
-    <div class="container">
-         <p>
-     	<form>
-  	<input type="button" value="Create PDF" onclick="createPDF()">
-	</form>
-      </p>
-      <div class="card" id="tab">
+    <div class="container">   
+       
+        <p>
+            <form>
+                <input type="button" value="Create PDF" onclick="createPDF()">
+            </form>
+        </p>
+        <div class="header", id = "taghead">      
+            <img style="float:center; padding: 15px 5px 30px 20px; width:350px;height:100px" src="https://iith.ac.in/assets/images/logo.png" alt="IITH Logo" >         
+        </div>   
 
-      <div class="card" id="makepdf">
-         <div class="main container-fluid">
-
-
+    <div class="card" id="tab">        
+        <div class="main container-fluid">            
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -118,48 +130,47 @@
                         <td>[% word.publishercode %]</td>
                         <td>[% word.price %]</td>
                         <td>[% word.currency %]</td>
-                        <td></td>
+                        <td>[% word.discount %]</td>
                         <td>[% word.quantity %]</td>
                     </tr>
                 [% END %]
             </tbody>
         </table>
 
-
-   
     <div id="textbox">
-   <p class="alignleft">
-   Department: [% borrower.sort1 %] <br>
-   Library uses......<br>
-   Indent No: [% indentid %] <br>
-   </p>
+        <p class="alignleft">
+            Department: [% borrower.sort1 %] <br>
+            Library uses......<br>
+            Indent No: [% indentid %] <br>
+        </p>
 
-   <p class="aligncenter">
-   Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
-   Library uses......<br>
-   Date:  Order Place to :…………………<br>
-   </p>
+        <p class="aligncenter">
+            Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
+            Library uses......<br>
+            Date:  Order Place to :…………………<br>
+        </p>
 
-   <p class="alignright">
-   Date: [% date_id %] <br>
-   Library uses......<br>
-   P O. No.:………………………………<br>
-   </p>
- </div>
+        <p class="alignright">
+            Date: [% date_id %] <br>
+            Library uses......<br>
+            P O. No.:………………………………<br>
+        </p>
 
- <div style="clear: both;"></div>
+        <p class="alignbottomright">
+            Signature: ............ <br>
+        </p>
+    </div>
 
-
-
+    <div style="clear: both;"></div>
     </div>
       </div>
-      
    </div>
 
 <script>
 function createPDF() {
         var sTable = document.getElementById('tab').innerHTML;
-
+        var sImage = document.getElementById('taghead').innerHTML;
+         
         var style = "<style>";
         style = style + "table {width: 100%;font: 17px Calibri;}";
         style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
@@ -168,13 +179,15 @@ function createPDF() {
 
         // CREATE A WINDOW OBJECT.
         var win = window.open('', '', 'height=700,width=700');
+        
 
         win.document.write('<html><head>');
-        win.document.write('<title>Profile</title>');   // <title> FOR PDF HEADER.
+        win.document.write('<title>Indent Generation</title>');   // <title> FOR PDF HEADER.
         win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
         win.document.write('</head>');
         win.document.write('<body>');
-        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+        win.document.write(sImage);
+        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.         
         win.document.write('</body></html>');
 
         win.document.close(); 	// CLOSE THE CURRENT WINDOW.
