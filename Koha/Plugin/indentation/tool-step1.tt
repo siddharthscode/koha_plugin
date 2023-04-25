@@ -146,7 +146,7 @@
 
     <div id="textbox">
    <p class="alignleft">
-   Department: <br>
+   Department ID:<input type="text" name="departmentid"><br>
    Library uses......<br>
    Indent No:<input type="text" name="indentid"><br>
    </p>

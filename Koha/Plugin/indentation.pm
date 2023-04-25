@@ -29,7 +29,7 @@ our $VERSION = "{VERSION}";
 
 our $metadata = {
     name            => 'Indentation plugin',
-    author          => 'Siddharth, Rewant, Nisha, Sravanthi',
+    author          => 'Siddharth, Rewant, Sravanthi, Nisha',
     description     => 'Generate indentation',
     date_authored   => '2020-12-01',
     date_updated    => "1970-01-01",
@@ -115,7 +115,24 @@ sub tool {
             my $table = "indentation_list_table";
             my $indentid =  $cgi->param('indentid');
             my $dateid = $cgi->param('date');
-
+            #Autogeneration of indentid
+            my $departmentid = $cgi->param('departmentid');
+            my ($Y, $M, $D) = split(/-/, $dateid);
+            if ($indentid eq "")
+            {
+                my $qq10 = "SELECT indentationid FROM $table ORDER BY indentationid DESC LIMIT 1";
+                my $dbh10 = C4::Context->dbh;
+                my $sth30 = $dbh10->prepare($qq10);
+                $sth30->execute();
+                my $lastIndent = $sth3->fetchrow_hashref();
+                if ($lastIndent eq "")
+                {
+                    $lastIndent = "1000";
+                }
+                my $currentIndent = $lastIndent + "0001";
+                my $indent_year = $Y % 100
+                $indentid = "LIB-".$indent_year."-".$departmentid."-$currentIndent";
+            }
             foreach my $row ( @suggest_list){
                 my $dbh11 = C4::Context->dbh;
                 my $qq11 = qq/
@@ -130,7 +147,8 @@ sub tool {
             $template1->param(borrower => $rr1, 
                               words => \@suggest_list,
                               indentid => $indentid,
-                              date_id => $dateid);
+                              date_id => $dateid,
+                              department_id => $departmentid);
             $self->output_html($template1->output());            
         }
     }
