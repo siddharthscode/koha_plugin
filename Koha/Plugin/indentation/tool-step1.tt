@@ -152,13 +152,13 @@
    </p>
 
    <p class="aligncenter">
-   Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
+   Faculty: [%borrower.email] [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
    Library uses......<br>
    Date:  Order Place to :…………………<br>
    </p>
 
    <p class="alignright">
-   Date: <input type="text" name="date" /><br>
+   Date: <input type="text" name="date" value="<?php echo date("Y-m-d");?>" /><br>
    Library uses......<br>
    P O. No.:………………………………<br>
    </p>
