@@ -72,7 +72,7 @@
     <script>
     var button = document.getElementById("button");
     var makepdf = document.getElementById("makepdf");
-  
+    document.querySelector("#today").valueAsDate = new Date();
     button.addEventListener("click", function () {
         var mywindow = window.open("", "PRINT", 
                 "height=800,width=1000");
@@ -152,13 +152,13 @@
    </p>
 
    <p class="aligncenter">
-   Faculty: [%borrower.email] [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
+   Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
    Library uses......<br>
    Date:  Order Place to :…………………<br>
    </p>
 
    <p class="alignright">
-   Date: <input type="text" name="date" value="<?php echo date("Y-m-d");?>" /><br>
+   Date: <input id="today" type="date" name="date"/><br>
    Library uses......<br>
    P O. No.:………………………………<br>
    </p>
