@@ -25,14 +25,14 @@ use Mojo::JSON qw(decode_json);;
 use URI::Escape qw(uri_unescape);
 
 
-our $VERSION = "{VERSION}";
+our $VERSION = "2.1";
 
 our $metadata = {
     name            => 'Indentation plugin',
     author          => 'Siddharth, Rewant, Sravanthi, Nisha',
     description     => 'Generate indentation',
-    date_authored   => '2020-12-01',
-    date_updated    => "1970-01-01",
+    date_authored   => '2023-04-07',
+    date_updated    => "2023-04-26",
     minimum_version => '19.1100000',
     maximum_version => undef,
     version         => $VERSION,
@@ -100,10 +100,16 @@ sub tool {
         my $sth3 = $dbh1->prepare($qq1);
         $sth3->execute();
         my $rr1 = $sth3->fetchrow_hashref();
+        my @departments;
+        push(@departments, "CSE");
+        push(@departments, "AI");
+        push(@departments, "MA");
+        push(@departments, "EE");
 
         unless ($cgi->param('save') eq 'Generate indentation'){
             my $template = $self->get_template({ file => 'tool-step1.tt' });
-            $template->param(borrower => $rr1, 
+            $template->param(borrower => $rr1,                 
+                            departments => \@departments,
                             words => \@suggest_list);
             $self->output_html($template->output());
         }
@@ -115,24 +121,24 @@ sub tool {
             my $table = "indentation_list_table";
             my $indentid =  $cgi->param('indentid');
             my $dateid = $cgi->param('date');
-            #Autogeneration of indentid
-            my $departmentid = $cgi->param('departmentid');
-            my ($Y, $M, $D) = split(/-/, $dateid);
-            if ($indentid eq "")
-            {
-                my $qq10 = "SELECT indentationid FROM $table ORDER BY indentationid DESC LIMIT 1";
-                my $dbh10 = C4::Context->dbh;
-                my $sth30 = $dbh10->prepare($qq10);
-                $sth30->execute();
-                my $lastIndent = $sth3->fetchrow_hashref();
-                if ($lastIndent eq "")
-                {
-                    $lastIndent = "1000";
-                }
-                my $currentIndent = $lastIndent + "0001";
-                my $indent_year = $Y % 100
-                $indentid = "LIB-".$indent_year."-".$departmentid."-$currentIndent";
-            }
+            my $departmentid = $cgi->param('department');
+
+            # my ($Y, $M, $D) = split(/-/, $dateid);
+            # if ($indentid eq "")
+            # {
+            #     my $qq10 = "SELECT indentationid FROM $table ORDER BY indentationid DESC LIMIT 1";
+            #     my $dbh10 = C4::Context->dbh;
+            #     my $sth30 = $dbh10->prepare($qq10);
+            #     $sth30->execute();
+            #     my $lastIndent = $sth3->fetchrow_hashref();
+            #     if ($lastIndent eq "")
+            #     {
+            #         $lastIndent = "1000";
+            #     }
+            #     my $currentIndent = $lastIndent + "0001";
+            #     $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
+            # }
+
             foreach my $row ( @suggest_list){
                 my $dbh11 = C4::Context->dbh;
                 my $qq11 = qq/
@@ -146,7 +152,7 @@ sub tool {
             my $template1 = $self->get_template({ file => 'tool-step3.tt' });
             $template1->param(borrower => $rr1, 
                               words => \@suggest_list,
-                              indentid => $indentid,
+                              indent_id => $indentid,
                               date_id => $dateid,
                               department_id => $departmentid);
             $self->output_html($template1->output());            

@@ -133,9 +133,9 @@
 
     <div id="textbox">
         <p class="alignleft">
-            Department: [% department_id%] <br>
+            Department: [% department_id %] <br>
             Library uses......<br>
-            Indent No: [% indentid %] <br>
+            Indent No: [% indent_id %] <br>
         </p>
 
         <p class="aligncenter">
