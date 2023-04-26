@@ -133,7 +133,7 @@
 
     <div id="textbox">
         <p class="alignleft">
-            Department: [% borrower.sort1 %] <br>
+            Department: [% department_id%] <br>
             Library uses......<br>
             Indent No: [% indentid %] <br>
         </p>

@@ -72,7 +72,7 @@
     <script>
     var button = document.getElementById("button");
     var makepdf = document.getElementById("makepdf");
-    document.querySelector("#today").valueAsDate = new Date();
+  
     button.addEventListener("click", function () {
         var mywindow = window.open("", "PRINT", 
                 "height=800,width=1000");
@@ -146,7 +146,7 @@
 
     <div id="textbox">
    <p class="alignleft">
-   Department ID:<input type="text" name="departmentid"><br>
+   Department: <br>
    Library uses......<br>
    Indent No:<input type="text" name="indentid"><br>
    </p>
@@ -158,7 +158,7 @@
    </p>
 
    <p class="alignright">
-   Date: <input id="today" type="date" name="date"/><br>
+   Date: <input type="text" name="date" value ="<?php echo date('Y-m-d') ?>" /><br>
    Library uses......<br>
    P O. No.:………………………………<br>
    </p>
