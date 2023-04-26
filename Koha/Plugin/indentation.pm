@@ -25,7 +25,7 @@ use Mojo::JSON qw(decode_json);;
 use URI::Escape qw(uri_unescape);
 
 
-our $VERSION = "2.1";
+our $VERSION = "2.2";
 
 our $metadata = {
     name            => 'Indentation plugin',
@@ -123,21 +123,21 @@ sub tool {
             my $dateid = $cgi->param('date');
             my $departmentid = $cgi->param('department');
 
-            # my ($Y, $M, $D) = split(/-/, $dateid);
-            # if ($indentid eq "")
-            # {
-            #     my $qq10 = "SELECT indentationid FROM $table ORDER BY indentationid DESC LIMIT 1";
-            #     my $dbh10 = C4::Context->dbh;
-            #     my $sth30 = $dbh10->prepare($qq10);
-            #     $sth30->execute();
-            #     my $lastIndent = $sth3->fetchrow_hashref();
-            #     if ($lastIndent eq "")
-            #     {
-            #         $lastIndent = "1000";
-            #     }
-            #     my $currentIndent = $lastIndent + "0001";
-            #     $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
-            # }
+            my ($Y, $M, $D) = split(/-/, $dateid);
+            if ($indentid eq "")
+            {
+                my $qq10 = "SELECT indentationid FROM $table ORDER BY indentationid DESC LIMIT 1";
+                my $dbh10 = C4::Context->dbh;
+                my $sth30 = $dbh10->prepare($qq10);
+                $sth30->execute();
+                my $lastIndent = $sth3->fetchrow_hashref();
+                if ($lastIndent eq "")
+                {
+                    $lastIndent = "1000";
+                }
+                my $currentIndent = $lastIndent + "0001";
+                $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
+            }
 
             foreach my $row ( @suggest_list){
                 my $dbh11 = C4::Context->dbh;
