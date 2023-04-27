@@ -25,14 +25,14 @@ use Mojo::JSON qw(decode_json);;
 use URI::Escape qw(uri_unescape);
 
 
-our $VERSION = "2.2";
+our $VERSION = "2.3";
 
 our $metadata = {
     name            => 'Indentation plugin',
     author          => 'Siddharth, Rewant, Sravanthi, Nisha',
     description     => 'Generate indentation',
     date_authored   => '2023-04-07',
-    date_updated    => "2023-04-26",
+    date_updated    => "2023-04-27",
     minimum_version => '19.1100000',
     maximum_version => undef,
     version         => $VERSION,
@@ -114,10 +114,7 @@ sub tool {
             $self->output_html($template->output());
         }
         else{
-             #-----------------------new part----------------------------------------------------------------------------#
-            #add indentation of this borrower in database
-            #for now there is a dummy indentation id
-            #my $indentation_id = "LIB-23-LA-2269";
+            # my $indentation_id = "LIB-23-LA-2269";
             my $table = "indentation_list_table";
             my $indentid =  $cgi->param('indentid');
             my $dateid = $cgi->param('date');
@@ -126,33 +123,34 @@ sub tool {
             my ($Y, $M, $D) = split(/-/, $dateid);
             if ($indentid eq "")
             {
-                my $qq10 = "SELECT indentationid FROM $table ORDER BY indentationid DESC LIMIT 1";
+                my $qq10 = "SELECT MAX(indentationid) FROM $table";
                 my $dbh10 = C4::Context->dbh;
                 my $sth30 = $dbh10->prepare($qq10);
                 $sth30->execute();
-                my $lastIndent = $sth3->fetchrow_hashref();
+                my $lastIndent = $sth30->fetchrow_hashref();
                 if ($lastIndent eq "")
                 {
                     $lastIndent = "1000";
                 }
-                my $currentIndent = $lastIndent + "0001";
-                $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
+                $indentid = $lastIndent + "0001";
+                # $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
             }
-
+            my $year = $Y % 100;
             foreach my $row ( @suggest_list){
                 my $dbh11 = C4::Context->dbh;
                 my $qq11 = qq/
-                            INSERT INTO $table (indentationid, status, suggestionid) 
-                            VALUES (?, ?, ?)/;
+                            INSERT INTO $table (indentationid, indentyear, indentdepartment, status, suggestionid) 
+                            VALUES (?, ?, ?, ?, ?)/;
                 my $sth31 = $dbh11->prepare($qq11);
-                $sth31->execute($indentid, 'indentation generated', $row->{suggestionid});
+                $sth31->execute($indentid, $year, $departmentid, 'indentation generated', $row->{suggestionid});
                 $sth31->finish();
             }  
             
             my $template1 = $self->get_template({ file => 'tool-step3.tt' });
+            my $indentation = "LIB-".$year."-".$departmentid."-".$indentid;
             $template1->param(borrower => $rr1, 
                               words => \@suggest_list,
-                              indent_id => $indentid,
+                              indent_id => $indentation,
                               date_id => $dateid,
                               department_id => $departmentid);
             $self->output_html($template1->output());            
@@ -174,19 +172,23 @@ sub install() {
 	#-------install and uninstall operations are working correctly-----------#
     my $dbh1 = C4::Context->dbh;
    my $qq1 = "
+        CREATE TABLE IF NOT EXISTS $indentation_table (
+        `indentationid` INT(10) NOT NULL,
+        `indentyear` INT(10) NOT NULL,
+        `indentdepartment` VARCHAR(4) NOT NULL,
+        `status` VARCHAR(50) DEFAULT 'pending',
+        `suggestionid` INT(10) DEFAULT NULL
+        ) ENGINE = INNODB;";
+    my $qq1 = "
          CREATE TABLE IF NOT EXISTS $indentation_table (
          `indentationid` VARCHAR(50) NOT NULL,
          `status` VARCHAR(50) DEFAULT 'pending',
           `suggestionid` INT(10) DEFAULT NULL
         ) ENGINE = INNODB;";
-    print "test12";
     $dbh1->{PrintError} = 1;
     $dbh1->{RaiseError} = 1;
     my $sth3 = $dbh1->prepare($qq1);
-    print $dbh1;
-    print "test2";
     $sth3->execute() or die "unable to execute".$sth3->errstr();
-    print "test3";
     $sth3->finish();
     
     return 1;
