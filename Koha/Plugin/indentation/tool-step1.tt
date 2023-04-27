@@ -141,43 +141,50 @@
 
     <form method="get">
 
-    <input type="hidden" name="class" value="[% CLASS | html %]"/>
-    <input type="hidden" name="method" value="[% METHOD | html %]"/>
+        <input type="hidden" name="class" value="[% CLASS | html %]"/>
+        <input type="hidden" name="method" value="[% METHOD | html %]"/>
 
-    <div id="textbox">
-   <p class="alignleft">
-   Department ID:<input type="text" name="departmentid"><br>
-   Library uses......<br>
-   Indent No:<input type="text" name="indentid"><br>
-   </p>
+        <div id="textbox">
+            <p class="alignleft">
+                Department: 
+                <!-- <input type="text" name="department">  -->
+                <select name="department">
+                    [% FOREACH dpt IN departments %]
+                        <option value= "[% dpt | html %]">[% dpt | html %]</option>
+                    [% END %]
+                </select>
+                <br>
+                Library uses......<br>
+                Indent No:<input type="text" name="indentid"><br>
+            </p>
 
-   <p class="aligncenter">
-   Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
-   Library uses......<br>
-   Date:  Order Place to :…………………<br>
-   </p>
+            <p class="aligncenter">
+                Faculty: [% borrower.title %] [% borrower.firstname %] [% borrower.middlename %] [% borrower.surname %]<br>
+                Library uses......<br>
+                Date:  Order Place to :…………………<br>
+            </p>
 
-   <p class="alignright">
-   Date: <input id="today" type="date" name="date"/><br>
-   Library uses......<br>
-   P O. No.:………………………………<br>
-   </p>
- </div>
- <div style="clear: both;"></div>
- <input type="hidden" name="color" value="[% borrower.borrowernumber | html %]"/>
-  <fieldset class="action">
-                          <input type="submit" name="save" value="Generate indentation" />
-                         <!--<input type="submit" value="Save configuration" /> -->
-                         <a class="cancel" href="/cgi-bin/koha/plugins/plugins-home.pl">Cancel</a>
- </fieldset>
+            <p class="alignright">
+                Date: <input id="today" type="date" name="date" /><br>
+                Library uses......<br>
+                P O. No.:………………………………<br>
+            </p>
+        </div>
+        <div style="clear: both;"></div>
+            <input type="hidden" name="color" value="[% borrower.borrowernumber | html %]"/>
+            <fieldset class="action">
+                <input type="submit" name="save" value="Generate indentation" />
+                <!--<input type="submit" value="Save configuration" /> -->
+                <a class="cancel" href="/cgi-bin/koha/plugins/plugins-home.pl">Cancel</a>
+            </fieldset>
 
- </form>
+    </form>
 
 </main>
-    </div>
-      </div>
-      
-   </div>
+</div>
+  </div>
+  
+</div>
 
 
 [% INCLUDE 'intranet-bottom.inc' %]
