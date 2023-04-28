@@ -25,14 +25,14 @@ use Mojo::JSON qw(decode_json);;
 use URI::Escape qw(uri_unescape);
 
 
-our $VERSION = "2.3";
+our $VERSION = "2.4";
 
 our $metadata = {
     name            => 'Indentation plugin',
-    author          => 'Siddharth, Rewant, Sravanthi, Nisha',
+    author          => 'Siddharth, Rewant, Nisha, Sravanthi',
     description     => 'Generate indentation',
     date_authored   => '2023-04-07',
-    date_updated    => "2023-04-27",
+    date_updated    => "2023-04-28",
     minimum_version => '19.1100000',
     maximum_version => undef,
     version         => $VERSION,
@@ -136,18 +136,18 @@ sub tool {
                 # $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
             }
             my $year = $Y % 100;
+            my $indentation = "LIB-".$year."-".$departmentid."-".$indentid;
             foreach my $row ( @suggest_list){
                 my $dbh11 = C4::Context->dbh;
                 my $qq11 = qq/
-                            INSERT INTO $table (indentationid, indentyear, indentdepartment, status, suggestionid) 
-                            VALUES (?, ?, ?, ?, ?)/;
+                            INSERT INTO $table (indentationid, indentno, indentyear, indentdepartment, status, suggestionid) 
+                            VALUES (?, ?, ?, ?, ?, ?)/;
                 my $sth31 = $dbh11->prepare($qq11);
-                $sth31->execute($indentid, $year, $departmentid, 'indentation generated', $row->{suggestionid});
+                $sth31->execute($indentation, $indentid, $year, $departmentid, 'indentation generated', $row->{suggestionid});
                 $sth31->finish();
             }  
             
             my $template1 = $self->get_template({ file => 'tool-step3.tt' });
-            my $indentation = "LIB-".$year."-".$departmentid."-".$indentid;
             $template1->param(borrower => $rr1, 
                               words => \@suggest_list,
                               indent_id => $indentation,
@@ -173,17 +173,12 @@ sub install() {
     my $dbh1 = C4::Context->dbh;
    my $qq1 = "
         CREATE TABLE IF NOT EXISTS $indentation_table (
-        `indentationid` INT(10) NOT NULL,
+        `indentationid` VARCHAR(50) NOT NULL,
+        `indentno` INT(10) NOT NULL,
         `indentyear` INT(10) NOT NULL,
         `indentdepartment` VARCHAR(4) NOT NULL,
         `status` VARCHAR(50) DEFAULT 'pending',
         `suggestionid` INT(10) DEFAULT NULL
-        ) ENGINE = INNODB;";
-    my $qq1 = "
-         CREATE TABLE IF NOT EXISTS $indentation_table (
-         `indentationid` VARCHAR(50) NOT NULL,
-         `status` VARCHAR(50) DEFAULT 'pending',
-          `suggestionid` INT(10) DEFAULT NULL
         ) ENGINE = INNODB;";
     $dbh1->{PrintError} = 1;
     $dbh1->{RaiseError} = 1;
@@ -206,15 +201,3 @@ sub uninstall() {
 
     return 1;
 }
-
-# sub tool_step1{
-#     my ( $self, $args ) = @_;
-#     my $cgi = $self->{'cgi'};
-#     my $template = $self->get_template({ file => 'tool-step1.tt' });
-#     my $dbh = C4::Context->dbh;
-#     # my $suggestions_table = $self->get_qualified_table_name('suggestions');
-
-#     # my $words = $dbh->selectcol_arrayref( "SELECT fancy_word FROM $suggestions_table" );
-#     $template->param( words => ['demo', 'demo2'] ,);
-#     $self->output_html( $template->output() );
-# }
