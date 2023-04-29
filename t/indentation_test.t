@@ -122,7 +122,7 @@ sub module_initialise {
     $plugins_dir = $plugins_dir1;
     push @INC, $plugins_dir1;
     my $full_pm_path = $plugins_dir . '/' . $pm_path;
-    my $ae = Archive::Extract->new( archive => "$Bin/koha-plugin-indentation_v_3_0.kpz", type => 'zip' );
+    my $ae = Archive::Extract->new( archive => "$Bin/koha-plugin-indentation-final.kpz", type => 'zip' );
     unless ( $ae->extract( to => $plugins_dir ) ) {
         warn "ERROR: " . $ae->error;
     }
