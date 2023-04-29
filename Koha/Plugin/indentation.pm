@@ -25,14 +25,14 @@ use Mojo::JSON qw(decode_json);;
 use URI::Escape qw(uri_unescape);
 
 
-our $VERSION = "2.4";
+our $VERSION = "3.0";
 
 our $metadata = {
     name            => 'Indentation plugin',
     author          => 'Siddharth, Rewant, Nisha, Sravanthi',
     description     => 'Generate indentation',
     date_authored   => '2023-04-07',
-    date_updated    => "2023-04-28",
+    date_updated    => "2023-04-29",
     minimum_version => '19.1100000',
     maximum_version => undef,
     version         => $VERSION,
@@ -123,16 +123,14 @@ sub tool {
             my ($Y, $M, $D) = split(/-/, $dateid);
             if ($indentid eq "")
             {
-                my $qq10 = "SELECT MAX(indentationid) FROM $table";
+            	my $defaultValue = 1000;
+                my $qq10 = "SELECT IFNULL(MAX(indentno), $defaultValue) as lastIndentNo FROM $table";
                 my $dbh10 = C4::Context->dbh;
                 my $sth30 = $dbh10->prepare($qq10);
                 $sth30->execute();
                 my $lastIndent = $sth30->fetchrow_hashref();
-                if ($lastIndent eq "")
-                {
-                    $lastIndent = "1000";
-                }
-                $indentid = $lastIndent + "0001";
+                $indentid = $lastIndent->{lastIndentNo};
+                $indentid++;
                 # $indentid = "LIB-".$Y."-".$departmentid."-$currentIndent";
             }
             my $year = $Y % 100;
@@ -174,8 +172,8 @@ sub install() {
    my $qq1 = "
         CREATE TABLE IF NOT EXISTS $indentation_table (
         `indentationid` VARCHAR(50) NOT NULL,
-        `indentno` INT(10) NOT NULL,
-        `indentyear` INT(10) NOT NULL,
+        `indentno` INT NOT NULL,
+        `indentyear` INT NOT NULL,
         `indentdepartment` VARCHAR(4) NOT NULL,
         `status` VARCHAR(50) DEFAULT 'pending',
         `suggestionid` INT(10) DEFAULT NULL
